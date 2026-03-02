@@ -1,13 +1,15 @@
 import { useState } from 'react'
-import { RouterProvider } from 'react-router'
 import { AppRoutes } from './AppRoutes'
-import './style.scss'
+import './shared/global.scss'
+import { AuthProvider } from './features/auth/auth.context'
 
 function App() {
 
   return (
     <>
-      <AppRoutes />
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </>
   )
 }

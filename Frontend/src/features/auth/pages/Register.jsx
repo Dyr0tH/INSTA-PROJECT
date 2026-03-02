@@ -1,28 +1,17 @@
-import axios from 'axios';
 import React, { useState } from 'react'
 import { Link } from 'react-router'
-
+import { userAuth } from '../hooks/userAuth';
+import '../styles/form.scss'
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  async function handleformSubmit(e) {
-    e.preventDefault()
+  const { handleRegister, loading } = userAuth();
 
-    axios.post('http://localhost:3000/api/auth/register', {
-      username,
-      email,
-      password
-    }, { withCredentials: true })
-      .then(res => {
-        console.log(res.data);
-        if(res.status === '200'){
-          setUsername('')
-          setEmail('')
-          setPassword('')
-        }
-      })
+  const handleformSubmit = async (e) => {
+    e.preventDefault()
+    handleRegister(username, email, password);
   }
 
   return (
@@ -55,7 +44,12 @@ const Register = () => {
             name="" id=""
             placeholder='Enter password' />
 
-          <button type="submit">Register</button>
+          {
+            loading ?
+              <button type="submit" className='button primary-button'>Getting you registered...</button> 
+              :
+              <button type="submit" className='button primary-button'>Register</button>
+          }
         </form>
 
         <p>Already have an account ? <Link className='toggleAuthForm' to="/login">Login</Link></p>
