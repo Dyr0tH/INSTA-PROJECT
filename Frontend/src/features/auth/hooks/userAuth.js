@@ -11,10 +11,12 @@ export const userAuth = () => {
     const handleLogin = async (emailOrUsername, password) => {
         setLoading(true);
         try {
+
             const response = await login(emailOrUsername, password);
             setUser(response.user)
+
         } catch (error) {
-            console.log(err)
+            console.log(error)
         } finally {
             setLoading(false);
         }

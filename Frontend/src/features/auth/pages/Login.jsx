@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import '../styles/form.scss'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { userAuth } from '../hooks/userAuth'
 
 const Login = () => {
@@ -8,6 +8,8 @@ const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const navigate = useNavigate();
+  
   const { handleLogin, loading } = userAuth();
 
   const handleSubmitForm = async (e) => {
@@ -17,8 +19,15 @@ const Login = () => {
       console.log('fill both fields...')
     }
     else {
-      handleLogin(emailOrUsername, password)
+      await handleLogin(emailOrUsername, password)
+      navigate('/')
     }
+  }
+
+  if(loading){
+    return (
+      <main> Loading... </main>
+    )
   }
 
 

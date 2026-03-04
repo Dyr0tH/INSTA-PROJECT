@@ -44,11 +44,12 @@ async function registerController(req, res) {
 
 async function loginController(req, res) {
     const { username, email, password } = req.body;
+
     const user = await userModel.findOne({
         $or: [
             { username: username }, { email: email }
         ]
-    })
+    }).select('+password')
 
     if (!user) {
         return res.status(404).json({
@@ -63,7 +64,7 @@ async function loginController(req, res) {
         })
     }
 
-    const token = jwt.sign({ id: user._id,username: user.username, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1hr' })
+    const token = jwt.sign({ id: user._id, username: user.username, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1hr' })
     res.cookie('token', token)
 
     res.status(200).json({
@@ -78,14 +79,14 @@ async function loginController(req, res) {
     })
 }
 
-async function getUserInfoController(req, res){
+async function getUserInfoController(req, res) {
     const userId = req.user.id;
 
     const user = await userModel.findById(userId);
 
     res.status(200).json({
-        message: 'retrived user info successfully', 
-        user:{
+        message: 'retrived user info successfully',
+        user: {
             username: user.username,
             email: user.email,
             bio: user.bio,

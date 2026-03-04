@@ -123,4 +123,29 @@ async function likePost(req, res){
     })
 }
 
-module.exports = { createPost, fetchAllPosts, fetchPost, likePost } 
+
+/* 
+* GET /api/posts/feed
+ */
+async function getFeed(req, res){
+    const user = req.user;
+
+    const posts = await Promise.all((await postModel.find().populate("user").lean())
+    .map(async (post) => {
+
+        const isLiked = await likeModel.findOne({
+            user:user.username,
+            post: post._id
+        })
+        
+        post.isLiked = !!isLiked;
+        return post;
+    }))
+    
+    res.status(200).json({
+        message: "All posts fetched successfully",
+        posts
+    })
+}
+
+module.exports = { createPost, fetchAllPosts, fetchPost, likePost, getFeed } 
